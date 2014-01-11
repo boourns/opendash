@@ -16,7 +16,6 @@ all: \
 	$(CPP) -c $< $(CPP_FLAGS) $(INCLUDE)
 
 OpenDash: $(OBJS)
-	./increment.sh
 	$(CPP) -o $@ $(OBJS) -lSDL_ttf -lSDL_image `sdl-config --libs` `xml2-config --libs` -lstdc++
 
 testBootXBE: testBootXBE.o $(OBJS)

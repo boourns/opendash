@@ -49,7 +49,7 @@ void BootScript::Execute()
   if (mArg) {
     strcat(cmd, " \"");
     strcat(cmd, mArg);
-    strcat(cmd, " \"");
+    strcat(cmd, "\"");
   }
 
   system(cmd);
