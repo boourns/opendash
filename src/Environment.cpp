@@ -767,7 +767,7 @@ void Environment::renderScreen()
     q.w = r.w;
     q.h = r.h;
     q.x = 0;
-    q.y = mMenuOffset-50;
+    q.y = (mMenuOffset-50-mMenuRenderOffset);
     if (q.y < 0) {
       q.y = 0;
     }
@@ -969,39 +969,40 @@ void Environment::renderMenu()
 
     while (t) {
 
-      SDL_Surface *tmp;
-      if (useSelected && i == mMenuSelected) {
-        tmp = TTF_RenderText_Blended(selectFont, t->getData()->getName(), elMenuSelectedFont->getColor());             
-      } else {
-        tmp = TTF_RenderText_Blended(font, t->getData()->getName(), elMenuFont->getColor());
-      }
-      if (i == mMenuSelected) {
-        mSelectedNode = t->getData();
-      }
+      if (i > mMenuSelected-visible && i < mMenuSelected+visible) {
+        SDL_Surface *tmp;
+        if (useSelected && i == mMenuSelected) {
+          tmp = TTF_RenderText_Blended(selectFont, t->getData()->getName(), elMenuSelectedFont->getColor());
+        } else {
+          tmp = TTF_RenderText_Blended(font, t->getData()->getName(), elMenuFont->getColor());
+        }
+        if (i == mMenuSelected) {
+          mSelectedNode = t->getData();
+        }
 
+        if (elMenu->getAlign() == Align_Left || !tmp) {
+          r.x = 5;
+        } else if (elMenu->getAlign() == Align_Center) {
+          r.x = (elMenu->getDimensions().w - tmp->w)/2;
+        } else if (elMenu->getAlign() == Align_Right) {
+          r.x = elMenu->getDimensions().w - tmp->w - 5;
+        }
 
-      if (elMenu->getAlign() == Align_Left || !tmp) {
-        r.x = 5;
-      } else if (elMenu->getAlign() == Align_Center) {
-        r.x = (elMenu->getDimensions().w - tmp->w)/2;
-      } else if (elMenu->getAlign() == Align_Right) {
-        r.x = elMenu->getDimensions().w - tmp->w - 5;
-      }
+        if (tmp) {
+          r.y += (entryHeight - tmp->h)/2;
 
-      if (tmp) {
-        r.y += (entryHeight - tmp->h)/2;
+          r.w = tmp->w;
+          r.h = tmp->h;
 
-        r.w = tmp->w;
-        r.h = tmp->h;
+          SDL_SetAlpha(tmp, 0,255);
+          SDL_BlitSurface(tmp, 0x00, mMenuSurface, &r);
+          r.y -= (entryHeight - tmp->h)/2;
+          SDL_FreeSurface(tmp);
+        }
 
-        SDL_SetAlpha(tmp, 0,255);
-        SDL_BlitSurface(tmp, 0x00, mMenuSurface, &r);
-        r.y -= (entryHeight - tmp->h)/2;
-        SDL_FreeSurface(tmp);
+        r.y += entryHeight;
       }
       t = t->getLink();
-
-      r.y += entryHeight;
       i++;
     }
 
