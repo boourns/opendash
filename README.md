@@ -1,6 +1,8 @@
 opendash
 ========
 
+![basic opendash image](https://f.cloud.github.com/assets/699550/1893137/55c8432e-7a70-11e3-84f5-6d01b6784588.png)
+
 SDL game launcher / front end for linux
 
 Prerequisites
