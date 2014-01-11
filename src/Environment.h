@@ -38,7 +38,7 @@ public:
   void saveSkinPath(char *fSkinPath);
   void ensureSkin();
   
-  void initialize();
+  void initialize(int argc, char **argv);
   
   void update();
   

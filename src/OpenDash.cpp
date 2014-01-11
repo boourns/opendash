@@ -10,7 +10,7 @@
 #include "FileMenu.h"
 #include "XBEMenu.h"
 #include "SkinMenu.h"
-#include "BootXBE.h"
+#include "BootScript.h"
 #include "Environment.h"
 #include "XboxInfo.h"
 #include "Controller.h"
@@ -56,7 +56,7 @@ int main(int argc, char **argv)
        xmlDoc *theDoc = 0;
        xmlNode *theRoot = 0;
        
-       theEnv->initialize();
+       theEnv->initialize(argc, argv);
 
        theDoc = xmlReadFile(CONFIG_FILE, NULL, 0);
        
@@ -87,14 +87,11 @@ int main(int argc, char **argv)
        while (1) {
           theEnv->update();
           theEnv->drawScreen();
-          //theEnv->getXboxInfo()->readState();
           
 	      // event handling now done in controller thread
-#ifdef WINDOWS
           while (SDL_PollEvent(&event)) {
               theEnv->getController()->update(&event);
           }
-#endif          
           // test for the hotkey key-combo (both triggers)
           if (c->getState(Ctrl_RTrig) == Button_Pressed && c->getState(Ctrl_LTrig) == Button_Pressed) {
              // go through hotkey list, update menu if hotkey pressed.
@@ -147,8 +144,8 @@ int main(int argc, char **argv)
 	  SDL_Delay(30);
 #endif
        }
-       
-       
+
+
        xmlFreeDoc(theDoc);
 }
 

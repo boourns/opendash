@@ -4,17 +4,18 @@
 #include <libxml/tree.h>
 #include <libxml/parser.h>
 
-class BootXBE : public MenuNode {
+class BootScript : public MenuNode {
 
 public:
 
-   BootXBE();
-   ~BootXBE();
+   BootScript();
+   ~BootScript();
    
    virtual void Execute();
    virtual void xmlConfigure(xmlNode *fNode);
    
    void setPath(char *fPath);
+   void setArg(char *fPath);
    void extractName(char *fPath);
    void extractDebugName(char *fPath);
    
@@ -23,6 +24,7 @@ public:
 protected:
    
    char *mPath;
+   char *mArg;
 };
 
 #endif

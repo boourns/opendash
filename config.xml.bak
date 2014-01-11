@@ -1,5 +1,4 @@
 <Environment>
-   <LogFile>log.log</LogFile>
    <Dialog>
       <TrayOpen>Open!</TrayOpen>
       <TrayNoDisk>No Disk!</TrayNoDisk>
@@ -28,29 +27,30 @@ to
       <Name>Menu</Name>
       <Children>
 
-        <BootScript>
-          <Name>MAME</Name>
-          <Path>./mame</Path>
-        </BootScript>
+	 <LaunchMenu>
+	    <Name>MAME</Name>
+      <Directory>./mame4all/</Directory>
+	    <Target>mame4all</Target>
+	    <StatusText>MAME4ALL</StatusText>
+	 </LaunchMenu>
 
 	 <LaunchFileMenu>
-     <Name>NES</Name>
-     <Target>./fceux</Target>
-      <Directory>/Users/tom/Code/C/OpenDash/roms/nes</Directory>
+	    <Name>NES</Name>
+      <Directory>./roms/nes</Directory>
 	    <StatusText>Nintendo Entertainment System (1983)</StatusText>
 	 </LaunchFileMenu>
 
-   <XboxAction>
+   <Action>
      <Name>Reboot</Name>
      <StatusText>Reboot Pi</StatusText>
 		 <Action>Reboot</Action>
-   </XboxAction>
+   </Action>
 
-	 <XboxAction>
+	 <Action>
 	   <Name>Shutdown</Name>
  	   <StatusText>Shutdown Pi</StatusText>
 	   <Action>Shutdown</Action>
-   </XboxAction>
+   </Action>
 
       </Children>
    </Menu>

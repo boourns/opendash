@@ -1,49 +1,47 @@
 #include "MenuNode.h"
 #include "SubMenuNode.h"
 #include "FileMenu.h"
-#include "XBEMenu.h"
-#include "BootXBE.h"
+#include "LaunchFileMenu.h"
+#include "BootScript.h"
 #include "Environment.h"
 
-#ifdef ENABLE_XBOX
-   #include <openxdk/debug.h>
-#else
-   #define debugPrint printf
-#endif
+#define debugPrint printf
 
 #include "debug.h"
 
 extern Environment *theEnv;
 
-XBEMenu::XBEMenu() : FileMenu()
+LaunchFileMenu::LaunchFileMenu() : FileMenu()
 {
 	// yeah
+  mChildren = 0;
 }
 
-XBEMenu::~XBEMenu()
+LaunchFileMenu::~LaunchFileMenu()
 {
 	
 }
 
-void XBEMenu::xmlConfigure(xmlNode *fNode)
+void LaunchFileMenu::xmlConfigure(xmlNode *fNode)
 {
 	FileMenu::xmlConfigure(fNode);
 }
 
-void XBEMenu::Execute()
+void LaunchFileMenu::Execute()
 {
-	LOG_ENTRY("XBEMenu::Execute")
-	
+	LOG_ENTRY("LaunchFileMenu::Execute")
+
 	if (!mChildren) {
-	
-  	   List<char> *fTargets = findFiles();
+
+ 	   List<char> *fTargets = findFiles();
 	   List<char> *t = fTargets;
-	   
+
 	   while (t) {
 	      if (t->getData()) {
-                 BootXBE *p = new BootXBE();
-                 p->setPath(t->getData());
-	         p->extractName(t->getData());
+                 BootScript *p = new BootScript();
+                 p->setPath(mTarget);
+                 p->setArg(t->getData());
+	               p->extractName(t->getData());
                  if (mChildren) {
                     mChildren->addItem(p);
                  } else {
@@ -55,10 +53,10 @@ void XBEMenu::Execute()
 	      t = t->getLink();
 	   }
            delete fTargets;
-        
+
 	}
-	
+
         SubMenuNode::Execute();
-	
-	LOG_EXIT("XBEMenu::Execute")
+
+	LOG_EXIT("LaunchFileMenu::Execute")
 }

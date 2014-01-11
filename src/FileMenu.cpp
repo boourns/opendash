@@ -73,16 +73,20 @@ List<char> *FileMenu::findFiles()
         char *p;
 	int i = 0;
         
+        printf("trying %s\n", mDirectory);
+
         if (!mDirectory || !mTarget) {
            return 0;
         }
 	
+        printf("trying %s\n", mDirectory);
         // does mDirectory exist?
         stat(mDirectory, &sBuf);
         if (!(sBuf.st_mode & S_IFDIR)) {
            return 0;
         }
         
+
         curDir = opendir(mDirectory);
 	
         if (curDir == NULL) {
@@ -90,14 +94,15 @@ List<char> *FileMenu::findFiles()
         }
 	
         while ((curDirent = readdir(curDir)) != NULL) {
-           sprintf(buf, "%s%s/%s", mDirectory, curDirent->d_name, mTarget);
+           printf("found %s\n", curDirent->d_name);
+           sprintf(buf, "%s/%s", mDirectory, curDirent->d_name);
            memset(&sBuf, 0x00, sizeof(struct stat));
            stat(buf, &sBuf);
            if (sBuf.st_mode & S_IFREG) {
-
               p = new char[strlen(buf)+1];
               strcpy(p, buf);
               if (t) {
+                 printf("adding %s\n", p);
                  t->addItem(p);
               } else {
                  t = new List<char> (p, 0x00);

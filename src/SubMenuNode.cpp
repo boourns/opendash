@@ -9,7 +9,7 @@
 
 #include "XBEMenu.h"
 #include "SkinMenu.h"
-#include "BootXBE.h"
+#include "BootScript.h"
 #include "LoadSkin.h"
 #include "FileAction.h"
 #include "XboxAction.h"

@@ -36,9 +36,9 @@ extern "C" {
 #include "Setting.h"
 
 #include "FileMenu.h"
-#include "XBEMenu.h"
+#include "LaunchFileMenu.h"
 #include "SkinMenu.h"
-#include "BootXBE.h"
+#include "BootScript.h"
 #include "LoadSkin.h"
 #include "FileAction.h"
 #include "XboxAction.h"
@@ -110,8 +110,8 @@ Environment::~Environment()
 MenuNode *Environment::loadNode(xmlNode *fNode)
 {
    MenuNode *tmp = 0;
-   if (!strcmp((char *) fNode->name, "XBEMenu") && fNode->children) {
-      tmp = new XBEMenu();
+   if (!strcmp((char *) fNode->name, "LaunchFileMenu") && fNode->children) {
+      tmp = new LaunchFileMenu();
       tmp->xmlConfigure(fNode->children);
    } else if (!strcmp((char *) fNode->name, "SubMenu") && fNode->children) {
       tmp = new SubMenuNode();
@@ -119,8 +119,8 @@ MenuNode *Environment::loadNode(xmlNode *fNode)
    } else if (!strcmp((char *) fNode->name, "SkinMenu") && fNode->children) {
       tmp = new SkinMenu();
       tmp->xmlConfigure(fNode->children);
-   } else if (!strcmp((char *) fNode->name, "BootXBE") && fNode->children) {
-      tmp = new BootXBE();
+   } else if (!strcmp((char *) fNode->name, "BootScript") && fNode->children) {
+      tmp = new BootScript();
       tmp->xmlConfigure(fNode->children);
    } else if (!strcmp((char *) fNode->name, "LoadSkin") && fNode->children) {
       tmp = new LoadSkin();
@@ -347,7 +347,7 @@ void Environment::ensureSkin()
     
 }
 
-void Environment::initialize()
+void Environment::initialize(int argc, char **argv)
 {
     
     SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK);
@@ -366,7 +366,15 @@ void Environment::initialize()
     mControllerThread = SDL_CreateThread(Controller::threadStart, mController);
 #endif
     
-    mScreen = SDL_SetVideoMode(640, 480, 32, SDL_DOUBLEBUF | SDL_HWSURFACE);
+    unsigned int vidFlags = SDL_DOUBLEBUF | SDL_HWSURFACE;
+
+    printf("argc %d argv[1] %s\n", argc, argv[1]);
+
+    if (argc == 2 && !strcmp(argv[1], "-f")) {
+      vidFlags = vidFlags | SDL_FULLSCREEN;
+    }
+
+    mScreen = SDL_SetVideoMode(640, 480, 32, vidFlags);
     mBuffer = SDL_CreateRGBSurface(SDL_HWSURFACE, 640, 480, mScreen->format->BitsPerPixel,
     mScreen->format->Rmask, mScreen->format->Gmask, mScreen->format->Bmask, 0);
        
