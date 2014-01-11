@@ -47,8 +47,9 @@ void BootScript::Execute()
   cmd[0] = 0;
   strcat(cmd, mPath);
   if (mArg) {
-    strcat(cmd, " ");
+    strcat(cmd, " \"");
     strcat(cmd, mArg);
+    strcat(cmd, " \"");
   }
 
   system(cmd);
@@ -77,6 +78,9 @@ void BootScript::extractName(char *fPath)
         }
 
         mName = strdup(basename(fPath));
+        if (mName[strlen(mName)-4] == '.') {
+          mName[strlen(mName)-4] = 0x00;
+        }
 }
 
 void BootScript::extractDebugName(char *fPath)
