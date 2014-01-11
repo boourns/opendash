@@ -47,6 +47,9 @@ public:
   void drawScreen();
   void renderMenu();
 
+  void minimize();
+  void maximize();
+
   // draw a messagebox, wait for response.
   void drawMessage(char *fTitle, char *fText);
   
@@ -105,7 +108,8 @@ private:
   int mMenuSelected; // index of selected entry in menu
   int mMenuState; // fading in/out to a new menu, or interactive, or ..?
   int mMenuStatePosition; // how far into the fade, etc?
-  
+  int mVidMode;
+
   
   // loaded from xml menu
   SubMenuNode *mMenu;

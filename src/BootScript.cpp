@@ -25,6 +25,7 @@ BootScript::BootScript() : MenuNode()
 {
 	mPath = 0;
   mArg = 0;
+  mMinimize = 0;
 }
 
 BootScript::~BootScript()
@@ -52,7 +53,15 @@ void BootScript::Execute()
     strcat(cmd, "\"");
   }
 
+  if (mMinimize) {
+    theEnv->minimize();
+  }
+
   system(cmd);
+
+  if (mMinimize) {
+    theEnv->maximize();
+  }
 }
 
 void BootScript::xmlConfigure(xmlNode *fNode)
@@ -64,6 +73,9 @@ void BootScript::xmlConfigure(xmlNode *fNode)
 	   if (!strcmp((char *) fNode->name, "Path") && fNode->children) {
 	      setPath((char *) fNode->children->content);
 	   }
+     if (!strcmp((char *) fNode->name, "Minimize")) {
+        mMinimize = 1;
+     }
 	   fNode = fNode->next;
 	}
         if (!mName && mPath) {
@@ -89,6 +101,11 @@ void BootScript::extractDebugName(char *fPath)
 	
 }	
 	
+void BootScript::setMinimize(int val)
+{
+  mMinimize = val;
+}
+
 void BootScript::setPath(char *fPath)
 {
 	LOG_ENTRY("BootScript::setPath")

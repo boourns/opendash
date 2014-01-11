@@ -42,6 +42,7 @@ void LaunchFileMenu::Execute()
                  p->setPath(mTarget);
                  p->setArg(t->getData());
 	               p->extractName(t->getData());
+                 p->setMinimize(1);
                  if (mChildren) {
                     mChildren->addItem(p);
                  } else {

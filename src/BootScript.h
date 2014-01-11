@@ -16,6 +16,7 @@ public:
    
    void setPath(char *fPath);
    void setArg(char *fPath);
+   void setMinimize(int val);
    void extractName(char *fPath);
    void extractDebugName(char *fPath);
    
@@ -25,6 +26,7 @@ protected:
    
    char *mPath;
    char *mArg;
+   int mMinimize;
 };
 
 #endif

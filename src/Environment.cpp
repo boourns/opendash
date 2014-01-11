@@ -347,6 +347,20 @@ void Environment::ensureSkin()
     
 }
 
+void Environment::minimize()
+{
+    mScreen = SDL_SetVideoMode(0, 0, 16, mVidMode);
+    mBuffer = SDL_CreateRGBSurface(SDL_HWSURFACE, 0, 0, mScreen->format->BitsPerPixel,
+    mScreen->format->Rmask, mScreen->format->Gmask, mScreen->format->Bmask, 0);
+}
+
+void Environment::maximize()
+{
+    mScreen = SDL_SetVideoMode(0, 0, 16, mVidMode | SDL_FULLSCREEN);
+    mBuffer = SDL_CreateRGBSurface(SDL_HWSURFACE, 0, 0, mScreen->format->BitsPerPixel,
+    mScreen->format->Rmask, mScreen->format->Gmask, mScreen->format->Bmask, 0);
+}
+
 void Environment::initialize(int argc, char **argv)
 {
     
@@ -361,23 +375,23 @@ void Environment::initialize(int argc, char **argv)
     
     mController = new Controller();
     mController->setScope(Scope_Any);
-    // executing controller startup thread
-#ifndef WINDOWS
-    mControllerThread = SDL_CreateThread(Controller::threadStart, mController);
-#endif
     
-    unsigned int vidFlags = SDL_DOUBLEBUF | SDL_HWSURFACE;
+    mVidMode = SDL_DOUBLEBUF | SDL_HWSURFACE;
+
+    int height = 480;
+    int width = 640;
 
     printf("argc %d argv[1] %s\n", argc, argv[1]);
 
     if (argc == 2 && !strcmp(argv[1], "-f")) {
-      vidFlags = vidFlags | SDL_FULLSCREEN;
+      maximize();
+    }
+    else {
+      mScreen = SDL_SetVideoMode(width, height, 16, mVidMode);
+      mBuffer = SDL_CreateRGBSurface(SDL_HWSURFACE, width, height, mScreen->format->BitsPerPixel,
+      mScreen->format->Rmask, mScreen->format->Gmask, mScreen->format->Bmask, 0);
     }
 
-    mScreen = SDL_SetVideoMode(640, 480, 32, vidFlags);
-    mBuffer = SDL_CreateRGBSurface(SDL_HWSURFACE, 640, 480, mScreen->format->BitsPerPixel,
-    mScreen->format->Rmask, mScreen->format->Gmask, mScreen->format->Bmask, 0);
-       
     TTF_Init();
     
 /*    if (mResources) {
