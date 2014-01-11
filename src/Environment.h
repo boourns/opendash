@@ -109,7 +109,7 @@ private:
   int mMenuState; // fading in/out to a new menu, or interactive, or ..?
   int mMenuStatePosition; // how far into the fade, etc?
   int mVidMode;
-
+  int mMenuRenderOffset;
   
   // loaded from xml menu
   SubMenuNode *mMenu;
