@@ -1166,6 +1166,11 @@ int Environment::getMenuSelected()
     return mMenuSelected;
 }
 
+int Environment::getMenuState()
+{
+    return mMenuSelected;
+}
+
 char *Environment::getLogFileName()
 {
     return mLogFileName;

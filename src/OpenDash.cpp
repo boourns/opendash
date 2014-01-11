@@ -52,7 +52,8 @@ int main(int argc, char **argv)
        SDL_Event event;
        theEnv = new Environment();
        int last_clock;
-       	
+       int dirty = 2;
+
        xmlDoc *theDoc = 0;
        xmlNode *theRoot = 0;
        
@@ -86,7 +87,15 @@ int main(int argc, char **argv)
        
        while (1) {
           theEnv->update();
-          theEnv->drawScreen();
+
+          if (dirty > 0) {
+            theEnv->drawScreen();
+            dirty--;
+          }
+
+          if (theEnv->getMenuState() != State_Normal) {
+            dirty = 10;
+          }
           
 	      // event handling now done in controller thread
           while (SDL_PollEvent(&event)) {
