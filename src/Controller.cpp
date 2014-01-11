@@ -148,11 +148,11 @@ void Controller::update(SDL_Event *fEvent)
                   setState(Ctrl_Start, fAction);
                } else if (fEvent->key.keysym.sym == SDLK_BACKSPACE) {
                   setState(Ctrl_Back, fAction);
-               } else if (fEvent->key.keysym.sym == SDLK_z) {
+               } else if (fEvent->key.keysym.sym == SDLK_LCTRL) {
                   setState(Ctrl_A, fAction);
                } else if (fEvent->key.keysym.sym == SDLK_a) {
                   setState(Ctrl_X, fAction);
-               } else if (fEvent->key.keysym.sym == SDLK_x) {
+               } else if (fEvent->key.keysym.sym == SDLK_LALT) {
                   setState(Ctrl_B, fAction);
                } else if (fEvent->key.keysym.sym == SDLK_s) {
                   setState(Ctrl_Y, fAction);
