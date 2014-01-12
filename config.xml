@@ -1,58 +1,37 @@
 <Environment>
-   <LogFile>log.log</LogFile>
-   <Dialog>
-      <TrayOpen>Open!</TrayOpen>
-      <TrayNoDisk>No Disk!</TrayNoDisk>
-      <TrayDisk>Disk!</TrayDisk>
-      <TrayOpening>Opening!</TrayOpening>
-      <TrayClosing>Closing!</TrayClosing>
-      <TrayBusy>Busy!</TrayBusy>
-<CopyFailed_OpenSource>File Copy Failed. 
-could not open source file 
-%s.</CopyFailed_OpenSource>
-<CopyFailed_SourceMissing>File Copy Failed.
-Could not find source file
-%s.</CopyFailed_SourceMissing>
-<CopyFailed_OpenDestination>File Copy Failed.
-could not open destination file
-%s.</CopyFailed_OpenDestination>
-<CopyFailed_Unknown>File Copy Failed.
-Error during copy from 
-%s 
-to 
-%s.</CopyFailed_Unknown>
-<TimerText>%d Seconds Remaining.</TimerText>
-   </Dialog>
-   
-   <Menu>
-      <Name>Menu</Name>
-      <Children>
+  <LogFile>log.log</LogFile>
+  <Dialog>
+  </Dialog>
 
-        <BootScript>
-          <Name>MAME</Name>
-          <Path>./mame</Path>
-        </BootScript>
+  <Menu>
+    <Name>Menu</Name>
+    <Children>
 
-	 <LaunchFileMenu>
-     <Name>NES</Name>
-     <Target>./fceux</Target>
-      <Directory>/Users/tom/Code/C/OpenDash/roms/nes</Directory>
-	    <StatusText>Nintendo Entertainment System (1983)</StatusText>
-	 </LaunchFileMenu>
+      <BootScript>
+        <Name>MAME</Name>
+        <Path>./mame</Path>
+      </BootScript>
 
-   <XboxAction>
-     <Name>Reboot</Name>
-     <StatusText>Reboot Pi</StatusText>
-		 <Action>Reboot</Action>
-   </XboxAction>
+      <LaunchFileMenu>
+        <Name>NES</Name>
+        <Target>./fceux</Target>
+        <Directory>/Users/tom/Code/C/OpenDash/roms/nes</Directory>
+        <StatusText>Nintendo Entertainment System (1983)</StatusText>
+      </LaunchFileMenu>
 
-	 <XboxAction>
-	   <Name>Shutdown</Name>
- 	   <StatusText>Shutdown Pi</StatusText>
-	   <Action>Shutdown</Action>
-   </XboxAction>
+      <XboxAction>
+        <Name>Reboot</Name>
+        <StatusText>Reboot Pi</StatusText>
+        <Action>Reboot</Action>
+      </XboxAction>
 
-      </Children>
-   </Menu>
+      <XboxAction>
+        <Name>Shutdown</Name>
+        <StatusText>Shutdown Pi</StatusText>
+        <Action>Shutdown</Action>
+      </XboxAction>
+
+    </Children>
+  </Menu>
 
 </Environment>

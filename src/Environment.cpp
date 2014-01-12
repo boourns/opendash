@@ -349,14 +349,14 @@ void Environment::ensureSkin()
 
 void Environment::minimize()
 {
-  mScreen = SDL_SetVideoMode(0, 0, 16, mVidMode);
+  mScreen = SDL_SetVideoMode(0, 0, 32, mVidMode);
   mBuffer = SDL_CreateRGBSurface(SDL_HWSURFACE, 0, 0, mScreen->format->BitsPerPixel,
       mScreen->format->Rmask, mScreen->format->Gmask, mScreen->format->Bmask, 0);
 }
 
 void Environment::maximize()
 {
-  mScreen = SDL_SetVideoMode(0, 0, 16, mVidMode | SDL_FULLSCREEN);
+  mScreen = SDL_SetVideoMode(0, 0, 32, mVidMode | SDL_FULLSCREEN);
   mBuffer = SDL_CreateRGBSurface(SDL_HWSURFACE, 0, 0, mScreen->format->BitsPerPixel,
       mScreen->format->Rmask, mScreen->format->Gmask, mScreen->format->Bmask, 0);
 }
@@ -387,7 +387,7 @@ void Environment::initialize(int argc, char **argv)
     maximize();
   }
   else {
-    mScreen = SDL_SetVideoMode(width, height, 16, mVidMode);
+    mScreen = SDL_SetVideoMode(width, height, 32, mVidMode);
     mBuffer = SDL_CreateRGBSurface(SDL_HWSURFACE, width, height, mScreen->format->BitsPerPixel,
         mScreen->format->Rmask, mScreen->format->Gmask, mScreen->format->Bmask, 0);
   }
