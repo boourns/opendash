@@ -1,6 +1,6 @@
 #
 
-MOBJS = MenuNode.o SubMenuNode.o FileMenu.o LaunchFileMenu.o Script.o SkinMenu.o BootScript.o DialogBox.o QuestionBox.o LoadSkin.o FileAction.o XboxAction.o LaunchDVD.o LoadKey.o XboxInfo.o Controller.o HotKey.o Environment.o FontResource.o Resources.o Resource.o ImageResource.o Element.o Elements.o Generic.o Setting.o
+MOBJS = MenuNode.o SubMenuNode.o FileMenu.o LaunchFileMenu.o Script.o SkinMenu.o BootScript.o DialogBox.o QuestionBox.o LoadSkin.o FileAction.o XboxAction.o LoadKey.o XboxInfo.o Controller.o HotKey.o Environment.o FontResource.o Resources.o Resource.o ImageResource.o Element.o Elements.o Generic.o Setting.o
 
 OBJS = OpenDash.o $(MOBJS)
 

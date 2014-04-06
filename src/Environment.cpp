@@ -7,14 +7,10 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-#ifdef ENABLE_XBOX
-#include <openxdk/debug.h>
-extern "C" {
-#include <hal/xbox.h>
-}
-#else
+#define SCREEN_WIDTH 1200
+#define SCREEN_HEIGHT 900
+
 #define debugPrint printf
-#endif
 
 #include "SDL.h"
 #include "SDL_image.h"
@@ -42,7 +38,6 @@ extern "C" {
 #include "LoadSkin.h"
 #include "FileAction.h"
 #include "XboxAction.h"
-#include "LaunchDVD.h"
 #include "DialogBox.h"
 #include "QuestionBox.h"
 #include "Script.h"
@@ -55,7 +50,6 @@ Environment::Environment()
   mResources = 0;
   mScreen = 0;
   mMenuSurface = 0;
-  mMenuBackground = 0;
   mBuffer = 0;
   mElements = 0;
   mSkinPath = 0;
@@ -130,9 +124,6 @@ MenuNode *Environment::loadNode(xmlNode *fNode)
     tmp->xmlConfigure(fNode->children);
   } else if (!strcmp((char *) fNode->name, "XboxAction") && fNode->children) {
     tmp = new XboxAction();
-    tmp->xmlConfigure(fNode->children);
-  } else if (!strcmp((char *) fNode->name, "LaunchDVD") && fNode->children) {
-    tmp = new LaunchDVD();
     tmp->xmlConfigure(fNode->children);
   } else if (!strcmp((char *) fNode->name, "DialogBox") && fNode->children) {
     tmp = new DialogBox();
@@ -216,11 +207,8 @@ void Environment::loadSkinPath()
   char buf[255];
   char buf2[255];
   int len = 0;
-#ifdef ENABLE_XBOX
-  sprintf(buf, "d:/skin.pth");
-#else
   sprintf(buf, "skin.pth");
-#endif
+
   printf("Reading in skin path..\n\n");
   FILE *fp = fopen(buf, "r");
   if (fp) {
@@ -235,16 +223,9 @@ void Environment::loadSkinPath()
       *strchr(buf2, '\r') = 0x00;
     }
   } else {
-#ifdef ENABLE_XBOX
-    sprintf(buf2, "d:/");
-#else
     sprintf(buf2, "");
-#endif
   }
 
-#ifdef ENABLE_XBOX
-  debugPrint("     Read in skin path: %s\n", buf2);
-#endif
   setSkinPath(buf2);
 
 }
@@ -252,18 +233,14 @@ void Environment::loadSkinPath()
 void Environment::saveSkinPath(char *fSkinPath)
 {
   char buf[255];
-#ifdef ENABLE_XBOX
-  sprintf(buf, "d:/skin.pth");
-#else
   sprintf(buf, "skin.pth");
-#endif
 
   FILE *fp = fopen(buf, "w");
   if (fp) {
     fwrite(fSkinPath, sizeof(char), strlen(fSkinPath), fp);
     fclose(fp);
   }
-}   
+}
 
 void Environment::ensureSkin()
 {
@@ -286,7 +263,7 @@ void Environment::ensureSkin()
   mResources = new Resources();
   mElements = new Elements();
 
-  SDL_Surface *t = SDL_CreateRGBSurface(SDL_HWSURFACE, 640,480,32,mScreen->format->Rmask, mScreen->format->Gmask, mScreen->format->Bmask, 0);
+  SDL_Surface *t = SDL_CreateRGBSurface(SDL_HWSURFACE, SCREEN_WIDTH, SCREEN_HEIGHT,32,mScreen->format->Rmask, mScreen->format->Gmask, mScreen->format->Bmask, 0);
   SDL_FillRect(t, 0, 0);
 
   ImageResource *f = new ImageResource();
@@ -342,9 +319,6 @@ void Environment::ensureSkin()
   e->setResourceName("Background");
   e->setSkinID("");
   mElements->addElement(e);
-
-
-
 }
 
 void Environment::minimize()
@@ -363,7 +337,6 @@ void Environment::maximize()
 
 void Environment::initialize(int argc, char **argv)
 {
-
   SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK);
 
   SDL_JoystickEventState(SDL_ENABLE);
@@ -378,8 +351,8 @@ void Environment::initialize(int argc, char **argv)
 
   mVidMode = SDL_DOUBLEBUF | SDL_HWSURFACE;
 
-  int height = 480;
-  int width = 640;
+  int height = SCREEN_HEIGHT;
+  int width = SCREEN_WIDTH;
 
   printf("argc %d argv[1] %s\n", argc, argv[1]);
 
@@ -393,18 +366,7 @@ void Environment::initialize(int argc, char **argv)
   }
 
   TTF_Init();
-
-  /*    if (mResources) {
-        mResources->loadResources();
-        }
-
-        if (mElements) {
-        mElements->associateResources(mResources);
-        } */
-
-
 }
-
 
 void Environment::update()
 {
@@ -413,17 +375,6 @@ void Environment::update()
   int fTarget = 0;
   int i,j;
   Element *t;
-
-  // update the menu state position if we're in a changemenu.
-  if (mMenuState == State_ChangeMenu) {
-
-    mMenuStatePosition++;
-
-    if (mMenuStatePosition == 4) {
-      mMenuState = State_Normal;
-      mMenuStatePosition = 0;
-    }
-  }
 
   // fix out of range mMenuSelected values.
   if (mMenuSelected < 0) {
@@ -444,33 +395,6 @@ void Environment::update()
   if (t) {
     fMenuEntryHeight = t->getDimensions().h;
   }
-
-  fTarget = mMenuSelected * fMenuEntryHeight;
-
-  /*    if (abs(fTarget - mMenuOffset) < 10) {
-        fTarget = mMenuOffset;
-        } else {
-        int fDiff = fTarget - mMenuOffset;
-        fDiff /= 10;
-        mMenuOffset += fDiff;
-        } */
-
-  if (mController->getState(Ctrl_RTrig) == Button_Pressed) {
-    j = 30;
-  } else {
-    j = 20;
-  }
-
-  if (fTarget + (fMenuEntryHeight*3) > (fMenuHeight + mMenuOffset)) {
-
-    mMenuOffset += j;
-  } else if (fTarget < mMenuOffset) {
-    mMenuOffset -= j;
-    if (mMenuOffset < 0) {
-      mMenuOffset = 0;
-    }
-  }
-
 }
 
 void Environment::drawMessage(char *fTitle, char *fText)
@@ -771,7 +695,6 @@ void Environment::renderScreen()
     if (q.y < 0) {
       q.y = 0;
     }
-    SDL_BlitSurface(mMenuBackground, &q, mScreen, &r);
     SDL_BlitSurface(mMenuSurface, &q, mScreen, &r);
   }
 
@@ -873,18 +796,12 @@ void Environment::renderMenu()
   int i;
   int entryHeight;
   int entryWidth;
-  int useSelected;
 
   if (mMenu) {
 
     if (mMenuSurface) {
       SDL_FreeSurface(mMenuSurface);
       mMenuSurface = 0;
-    }
-
-    if (mMenuBackground) {
-      SDL_FreeSurface(mMenuBackground);
-      mMenuBackground = 0;
     }
 
     Element *elMenu = mElements->getElementByContent(CONTENT_MENU, mMenu->getSkinID());
@@ -901,65 +818,22 @@ void Environment::renderMenu()
 
     int visible = (elMenu->getDimensions().h / entryHeight) + 1;
 
-    mMenuSurface = SDL_CreateRGBSurface(SDL_HWSURFACE | SDL_SRCALPHA, elMenu->getDimensions().w, (visible * 2) * entryHeight, 32, 0xff000000, 0x00ff0000, 0x0000ff00, 0x000000ff);       
-    mMenuBackground = SDL_CreateRGBSurface(SDL_HWSURFACE | SDL_SRCALPHA, elMenu->getDimensions().w, (visible * 2) * entryHeight, 32, 0xff000000, 0x00ff0000, 0x0000ff00, 0x000000ff);
+    mMenuSurface = SDL_CreateRGBSurface(SDL_HWSURFACE | SDL_SRCALPHA, elMenu->getDimensions().w, visible * entryHeight, 32, 0xff000000, 0x00ff0000, 0x0000ff00, 0x000000ff); 
 
     SDL_SetAlpha(mMenuSurface, 0, 255);
-    SDL_SetAlpha(mMenuBackground, 0, 255);
-
-    if (elMenuEntryBG && elMenuEntryBG->getResource()) {
-      SDL_Surface *tmp = ((ImageResource *) elMenuEntryBG->getResource())->getImage();
-      SDL_SetAlpha(tmp, 0, 255);
-      r.w = tmp->w;
-      r.h = tmp->h;
-      r.x = 0;
-      r.y = 0;
-
-      useSelected = 0;
-      SDL_Surface *selected;
-      if (elMenuSelectedBG && elMenuSelectedBG->getResource()) {
-        useSelected = 1;
-        selected = ((ImageResource *) elMenuSelectedBG->getResource())->getImage();
-        SDL_SetAlpha(selected, 0, 255);
-      }
-      int len = mMenu->getChildren()->getLength();
-
-      int firstRendered = 1;
-
-      for (i = 0; i < len; i++) {
-        if (i > mMenuSelected-visible && i < mMenuSelected+visible) {
-          if (firstRendered) {
-            firstRendered = 0;
-            mMenuRenderOffset = i * entryHeight;
-          }
-          if (useSelected && i == mMenuSelected) {
-            SDL_BlitSurface(selected, 0x00, mMenuBackground, &r);
-          } else {
-            SDL_BlitSurface(tmp, 0x00, mMenuBackground, &r);
-          }
-          r.y += entryHeight;
-        } else if (i > mMenuSelected + visible) {
-          len = i;
-        }
-      }
-      SDL_SetAlpha(tmp, SDL_SRCALPHA, 255);
-    }
 
     List<MenuNode> *t = mMenu->getChildren();
 
     Element *elMenuFont = mElements->getElementByContent(CONTENT_MENUFONT, mMenu->getSkinID());
     Element *elMenuSelectedFont = mElements->getElementByContent(CONTENT_MENUFONT_SELECTED, mMenu->getSkinID());
 
-
     TTF_Font *font = ((FontResource *) elMenuFont->getResource())->getFont();
     TTF_Font *selectFont;
 
-    useSelected = 0;
+    selectFont = 0;
     if (elMenuSelectedFont && elMenuSelectedFont->getResource()) {
       selectFont = ((FontResource *) elMenuSelectedFont->getResource())->getFont();
-      useSelected = 1;
     }
-
 
     r.w = elMenu->getDimensions().w;
     r.h = 30;
@@ -967,11 +841,20 @@ void Environment::renderMenu()
     r.y = 0;
     i = 0;
 
+    int visible_min = mMenuSelected-(visible/2);
+    int visible_max = mMenuSelected+(visible/2);
+
+    if (visible_min < 0)
+    {
+      visible_max += (visible_min*-1);
+      visible_min = 0;
+    }
+
     while (t) {
 
-      if (i > mMenuSelected-visible && i < mMenuSelected+visible) {
+      if (i >= visible_min && i < visible_max) {
         SDL_Surface *tmp;
-        if (useSelected && i == mMenuSelected) {
+        if (selectFont && i == mMenuSelected) {
           tmp = TTF_RenderText_Blended(selectFont, t->getData()->getName(), elMenuSelectedFont->getColor());
         } else {
           tmp = TTF_RenderText_Blended(font, t->getData()->getName(), elMenuFont->getColor());
@@ -1007,7 +890,6 @@ void Environment::renderMenu()
     }
 
     SDL_SetAlpha(mMenuSurface, SDL_SRCALPHA, 255);
-    SDL_SetAlpha(mMenuBackground, SDL_SRCALPHA, 255);
   }
 
 }
@@ -1071,7 +953,7 @@ void Environment::setCurrentMenu(SubMenuNode *fNode)
     mMenu = fNode;
     mMenuSelected = 0;
     mMenuOffset = 0;
-    mMenuState = State_ChangeMenu;
+    mMenuState = State_Normal;
     mMenuStatePosition = 0;
   }
 }

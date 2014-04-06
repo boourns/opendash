@@ -13,7 +13,6 @@
 #include "LoadSkin.h"
 #include "FileAction.h"
 #include "XboxAction.h"
-#include "LaunchDVD.h"
 #include "DialogBox.h"
 
 #include "List.h"
